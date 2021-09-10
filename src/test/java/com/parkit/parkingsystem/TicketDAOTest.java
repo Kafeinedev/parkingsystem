@@ -159,4 +159,47 @@ public class TicketDAOTest {
 		assertThat(ticket).isEqualTo(null);
 	}
 
+	@Test
+	public void updateTicketCorrectlyReturnTrue() {
+		try {
+			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
+			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean ret = ticketDAO.updateTicket(ticket);
+		assertThat(ret).isEqualTo(true);
+	}
+
+	@Test
+	public void updateTicketIncorrectlyReturnfalse() {
+		try {
+			when(mockDBConfig.getConnection()).thenThrow(new MockitoException("Unit test exception"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean ret = ticketDAO.updateTicket(ticket);
+		assertThat(ret).isEqualTo(false);
+	}
+
+	@Test
+	public void updateTicketCallOtherClassCorrectly() {
+		try {
+			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
+			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
+
+			ticketDAO.updateTicket(ticket);
+
+			verify(mockDBConfig, times(1)).getConnection();
+			verify(mockConnection, times(1)).prepareStatement(any(String.class));
+			verify(mockPS, times(1)).setDouble(1, 0.0);
+			verify(mockPS, times(1)).setTimestamp(2, new java.sql.Timestamp(ticket.getOutTime().getTime()));
+			verify(mockPS, times(1)).setInt(3, 1);
+			verify(mockPS, times(1)).execute();
+			verify(mockDBConfig, times(1)).closeConnection(mockConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
