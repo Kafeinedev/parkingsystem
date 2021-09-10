@@ -13,11 +13,11 @@ public class ParkingSpot {
         this.isAvailable = isAvailable;
     }
 
-    public int getId() {
+    public int getNumber() {
         return number;
     }
 
-    public void setId(int number) {
+    public void setNumber(int number) {
         this.number = number;
     }
 

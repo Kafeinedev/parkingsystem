@@ -44,7 +44,7 @@ public class ParkingSpotDAO {
 			con = dataBaseConfig.getConnection();
 			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
 			ps.setBoolean(1, parkingSpot.isAvailable());
-			ps.setInt(2, parkingSpot.getId());
+			ps.setInt(2, parkingSpot.getNumber());
 			int updateRowCount = ps.executeUpdate();
 			dataBaseConfig.closePreparedStatement(ps);
 			return (updateRowCount == 1);
