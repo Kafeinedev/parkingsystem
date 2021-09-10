@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.*;
@@ -15,6 +16,7 @@ import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.constants.ParkingType;
+
 import org.mockito.Mock;
 import org.mockito.exceptions.base.MockitoException;
 
@@ -71,13 +73,15 @@ public class TicketDAOTest {
 			verify(mockPS, times(1)).setDouble(3, 0.0);
 			verify(mockPS, times(2)).setTimestamp(any(Integer.class), any(java.sql.Timestamp.class));
 			verify(mockPS, times(1)).execute();
+			verify(mockDBConfig, times(1)).closeConnection(mockConnection);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	@Disabled // Disabled because of error logging
 	@Test
-	void errorWhenSavingTicketReturnFalse() {
+	public void errorWhenSavingTicketReturnFalse() {
 		try {
 			when(mockDBConfig.getConnection()).thenThrow(new MockitoException("Unit test exception"));
 		} catch (Exception e) {
@@ -85,6 +89,74 @@ public class TicketDAOTest {
 		}
 		boolean ret = ticketDAO.saveTicket(ticket);
 		assertEquals(false, ret);
+	}
+
+	@Test
+	public void getTicketReturnProperTicket() {
+		java.sql.Timestamp date = new java.sql.Timestamp(new Date().getTime());
+		java.sql.Timestamp futureDate = new java.sql.Timestamp(date.getTime() + 10);
+		try {
+			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
+			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
+			when(mockPS.executeQuery()).thenReturn(mockRS);
+			when(mockRS.next()).thenReturn(true);
+			when(mockRS.getInt(any(Integer.class))).thenReturn(42, 28);
+			when(mockRS.getString(6)).thenReturn("BIKE");
+			when(mockRS.getDouble(3)).thenReturn(27.0);
+			when(mockRS.getTimestamp(any(Integer.class))).thenReturn(date, futureDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ticket = ticketDAO.getTicket("SalutCamarade");
+		assertThat(ticket.getParkingSpot()).isEqualTo(new ParkingSpot(42, ParkingType.BIKE, false));
+		assertThat(ticket.getId()).isEqualTo(28);
+		assertThat(ticket.getVehicleRegNumber()).isEqualTo("SalutCamarade");
+		assertThat(ticket.getPrice()).isEqualTo(27.0);
+		assertThat(ticket.getInTime()).isEqualTo(date);
+		assertThat(ticket.getOutTime()).isEqualTo(futureDate);
+	}
+
+	@Test
+	public void getTicketCallOtherClassCorrectly() {
+		try {
+			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
+			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
+			when(mockPS.executeQuery()).thenReturn(mockRS);
+			when(mockRS.next()).thenReturn(true);
+			when(mockRS.getInt(any(Integer.class))).thenReturn(42, 28);
+			when(mockRS.getString(6)).thenReturn("BIKE");
+			when(mockRS.getDouble(3)).thenReturn(27.0);
+			when(mockRS.getTimestamp(any(Integer.class))).thenReturn(new java.sql.Timestamp(new Date().getTime()));
+
+			ticketDAO.getTicket("jeserrarien");
+
+			verify(mockDBConfig, times(1)).getConnection();
+			verify(mockConnection, times(1)).prepareStatement(any(String.class));
+			verify(mockPS, times(1)).executeQuery();
+			verify(mockRS, times(1)).next();
+			verify(mockRS, times(2)).getInt(any(Integer.class));
+			verify(mockRS, times(1)).getDouble(any(Integer.class));
+			verify(mockRS, times(2)).getTimestamp(any(Integer.class));
+			verify(mockDBConfig, times(1)).closeResultSet(mockRS);
+			verify(mockDBConfig, times(1)).closePreparedStatement(mockPS);
+			verify(mockDBConfig, times(1)).closeConnection(mockConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void getTicketReturnNullIfThereIsNoResult() {
+		try {
+			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
+			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
+			when(mockPS.executeQuery()).thenReturn(mockRS);
+			when(mockRS.next()).thenReturn(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ticket = ticketDAO.getTicket("I'm losing MY MIND");
+		assertThat(ticket).isEqualTo(null);
 	}
 
 }
