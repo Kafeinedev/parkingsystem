@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -80,6 +82,7 @@ class ReductionDAOTest {
 		}
 	}
 
+	@Disabled // disabled because of error logging
 	@Test
 	public void isRecurringUserReturnFalseIfError() {
 		try {
@@ -89,5 +92,49 @@ class ReductionDAOTest {
 		}
 		boolean ret = reductionDAO.isRecurring("blabla");
 		assertThat(ret).isEqualTo(false);
+	}
+
+	@Test
+	public void addingRecurringUserCorrectlyReturnTrue() {
+		try {
+			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
+			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
+			when(mockPS.execute()).thenReturn(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean ret = reductionDAO.addRecurringUser("blablacar");
+		assertThat(ret).isEqualTo(true);
+	}
+
+	@Test
+	public void addingRecurringUserCallOtherClassesProperly() {
+		try {
+			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
+			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
+
+			reductionDAO.addRecurringUser("joe");
+
+			verify(mockDBConfig, times(1)).getConnection();
+			verify(mockConnection, times(1)).prepareStatement(any(String.class));
+			verify(mockPS, times(1)).setString(1, "joe");
+			verify(mockPS, times(1)).setBoolean(2, true);
+			verify(mockPS, times(1)).execute();
+			verify(mockDBConfig, times(1)).closePreparedStatement(mockPS);
+			verify(mockDBConfig, times(1)).closeConnection(mockConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void errorWhenAddingRecurringUserReturnFalse() {
+		try {
+			when(mockDBConfig.getConnection()).thenThrow(new MockitoException("Unit test exception"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean ret = reductionDAO.addRecurringUser("bob");
+		assertEquals(false, ret);
 	}
 }

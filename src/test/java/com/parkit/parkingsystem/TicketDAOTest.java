@@ -65,7 +65,9 @@ public class TicketDAOTest {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
+
 			ticketDAO.saveTicket(ticket);
+
 			verify(mockDBConfig, times(1)).getConnection();
 			verify(mockConnection, times(1)).prepareStatement(any(String.class));
 			verify(mockPS, times(1)).setInt(1, 35);

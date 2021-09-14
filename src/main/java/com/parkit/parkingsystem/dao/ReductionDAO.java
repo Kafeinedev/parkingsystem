@@ -35,4 +35,9 @@ public class ReductionDAO {
 		}
 		return ret;
 	}
+
+	public boolean addRecurringUser(String string) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
