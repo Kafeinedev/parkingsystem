@@ -36,8 +36,21 @@ public class ReductionDAO {
 		return ret;
 	}
 
-	public boolean addRecurringUser(String string) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean addRecurringUser(String vehicleRegNumber) {
+		Connection con = null;
+		boolean ret = false;
+		try {
+			con = dataBaseConfig.getConnection();
+			PreparedStatement ps = con.prepareStatement(DBConstants.ADD_RECURRING);
+			ps.setString(1, vehicleRegNumber);
+			ps.setBoolean(2, true);
+			ret = ps.execute();
+			dataBaseConfig.closePreparedStatement(ps);
+		} catch (Exception ex) {
+			logger.error("Error adding recurring user", ex);
+		} finally {
+			dataBaseConfig.closeConnection(con);
+		}
+		return ret;
 	}
 }
