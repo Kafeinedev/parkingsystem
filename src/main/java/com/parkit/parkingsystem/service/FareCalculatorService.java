@@ -1,9 +1,21 @@
 package com.parkit.parkingsystem.service;
 
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.constants.ReductionFactor;
+import com.parkit.parkingsystem.dao.ReductionDAO;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
+
+	public ReductionDAO reductionDAO;
+
+	private double calculateFactor(String vehiculeRegNumber) {
+		double ret = 1.0;
+		if (reductionDAO.isRecurring(vehiculeRegNumber)) {
+			ret -= ReductionFactor.RECURRING_USER;
+		}
+		return ret;
+	}
 
 	public void calculateFare(Ticket ticket) {
 		if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
@@ -18,11 +30,11 @@ public class FareCalculatorService {
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
-			ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+			ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * calculateFactor(ticket.getVehicleRegNumber()));
 			break;
 		}
 		case BIKE: {
-			ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+			ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * calculateFactor(ticket.getVehicleRegNumber()));
 			break;
 		}
 		default:
