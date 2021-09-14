@@ -68,9 +68,13 @@ class ReductionDAOTest {
 
 			verify(mockDBConfig, times(1)).getConnection();
 			verify(mockConnection, times(1)).prepareStatement(any(String.class));
+			verify(mockPS, times(1)).setString(1, "nawak");
 			verify(mockPS, times(1)).executeQuery();
 			verify(mockRS, times(1)).next();
 			verify(mockRS, times(1)).getBoolean(1);
+			verify(mockDBConfig, times(1)).closeResultSet(mockRS);
+			verify(mockDBConfig, times(1)).closePreparedStatement(mockPS);
+			verify(mockDBConfig, times(1)).closeConnection(mockConnection);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
