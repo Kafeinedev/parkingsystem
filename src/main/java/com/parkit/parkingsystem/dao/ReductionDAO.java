@@ -11,24 +11,28 @@ import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
 
 public class ReductionDAO {
-	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 	private static final Logger logger = LogManager.getLogger("ReductionDAO");
+
+	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
 	public boolean isRecurring(String vehicleRegNumber) {
 		Connection con = null;
+		boolean ret = false;
 		try {
 			con = dataBaseConfig.getConnection();
 			PreparedStatement ps = con.prepareStatement(DBConstants.IS_RECURRING);
 			ps.setString(1, vehicleRegNumber);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return rs.getBoolean(1);
+				ret = rs.getBoolean(1);
 			}
+			dataBaseConfig.closeResultSet(rs);
+			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
 			logger.error("Error getting recurring user", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}
-		return false;
+		return ret;
 	}
 }
