@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayOutputStream;
@@ -133,8 +132,44 @@ public class ParkingServiceTest {
 
 	@Test
 	public void processExitingVehicleCallOtherClassCorrectly() {
-		// parkingService.processExitingVehicle();
-		assertThat(false).isEqualTo(true);
+		try {
+			when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		when(mockTicketDAO.getTicket(any(String.class))).thenReturn(ticket);
+		when(mockTicketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
+
+		parkingService.processExitingVehicle();
+
+		try {
+			verify(mockInputReaderUtil, times(1)).readVehicleRegistrationNumber();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		verify(mockTicketDAO, times(1)).getTicket("ABCDEF");
+		verify(mockParkingSpotDAO, times(1)).updateParking(parkingSpot);
+		verify(mockReductionDAO, times(1)).isRecurring("ABCDEF");
+		verify(mockReductionDAO, times(1)).addRecurringUser("ABCDEF");
 	}
 
+	@Test
+	public void processExitingVehicleUseSystemOutCorrectly() {
+		try {
+			when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		when(mockTicketDAO.getTicket(any(String.class))).thenReturn(ticket);
+		when(mockTicketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
+
+		parkingService.processExitingVehicle();
+
+		assertThat(outputStreamCaptor.toString())
+				.isEqualTo("Please type the vehicle registration number and press enter key\n"
+						+ "Please pay the parking fare:" + ticket.getPrice() + '\n'
+						+ "Recorded out-time for vehicle number:ABCDEF is:" + new Date() + '\n');
+	}
 }
