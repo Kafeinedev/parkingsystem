@@ -8,6 +8,7 @@ import com.parkit.parkingsystem.model.Ticket;
 public class FareCalculatorService {
 
 	private ReductionDAO reductionDAO;
+	private double duration;
 
 	public FareCalculatorService(ReductionDAO reductionDAO) {
 		this.reductionDAO = reductionDAO;
@@ -15,6 +16,9 @@ public class FareCalculatorService {
 
 	private double calculateFactor(String vehiculeRegNumber) {
 		double ret = 1.0;
+		if (duration <= 0.5) {
+			return 0.0;
+		}
 		if (reductionDAO.isRecurring(vehiculeRegNumber)) {
 			ret -= ReductionFactor.RECURRING_USER;
 		}
@@ -30,7 +34,7 @@ public class FareCalculatorService {
 		long outTime = ticket.getOutTime().getTime();
 
 		// duration in hours converted from ms (1000ms in 1s, 3600s in 1h)
-		double duration = (outTime - inTime) / 3600000.0;
+		duration = (outTime - inTime) / 3600000.0;
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {

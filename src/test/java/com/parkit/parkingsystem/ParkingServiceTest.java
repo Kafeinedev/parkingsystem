@@ -150,7 +150,7 @@ public class ParkingServiceTest {
 		}
 		verify(mockTicketDAO, times(1)).getTicket("ABCDEF");
 		verify(mockParkingSpotDAO, times(1)).updateParking(parkingSpot);
-		verify(mockReductionDAO, times(2)).isRecurring("ABCDEF");
+		verify(mockReductionDAO).isRecurring("ABCDEF");
 		verify(mockReductionDAO, times(1)).addRecurringUser("ABCDEF");
 	}
 

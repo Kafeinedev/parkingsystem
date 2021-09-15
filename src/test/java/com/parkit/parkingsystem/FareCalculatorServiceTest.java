@@ -162,8 +162,6 @@ public class FareCalculatorServiceTest {
 		Date outTime = new Date();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 
-		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
-
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
