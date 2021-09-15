@@ -154,4 +154,21 @@ public class FareCalculatorServiceTest {
 		assertEquals((Fare.BIKE_RATE_PER_HOUR * 1.0 - ReductionFactor.RECURRING_USER), ticket.getPrice());
 	}
 
+	@Test
+	public void calculateFareCarLessThanThirtyMin() {
+		Date inTime = new Date();
+		inTime.setTime(System.currentTimeMillis() - (1799999));
+
+		Date outTime = new Date();
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+
+		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
+
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+		fareCalculatorService.calculateFare(ticket);
+		assertEquals(0.0, ticket.getPrice());
+	}
+
 }
