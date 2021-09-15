@@ -46,23 +46,16 @@ public class ParkingDataBaseIT {
 	private static void tearDown() {
 
 	}
-
-	@Test
-	public void testParkingACar() {
-		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.processIncomingVehicle();
-		// TODO: check that a ticket is actually saved in DB and Parking table is
-		// updated
-		// with availability
-	}
-
-	@Test
-	public void testParkingLotExit() {
-		testParkingACar();// wowo wow camarade
-		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.processExitingVehicle();
-		// TODO: check that the fare generated and out time are populated correctly in
-		// the database
-	}
-
+	/*
+	 * @Test public void testParkingACar() { ParkingService parkingService = new
+	 * ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+	 * parkingService.processIncomingVehicle(); // TODO: check that a ticket is
+	 * actually saved in DB and Parking table is // updated // with availability }
+	 * 
+	 * @Test public void testParkingLotExit() { testParkingACar();// wowo wow
+	 * camarade ParkingService parkingService = new ParkingService(inputReaderUtil,
+	 * parkingSpotDAO, ticketDAO); parkingService.processExitingVehicle(); // TODO:
+	 * check that the fare generated and out time are populated correctly in // the
+	 * database }
+	 */
 }

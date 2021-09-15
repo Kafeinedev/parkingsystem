@@ -29,8 +29,7 @@ public class FareCalculatorServiceTest {
 
 	@BeforeEach
 	private void setUpPerTest() {
-		fareCalculatorService = new FareCalculatorService();
-		fareCalculatorService.reductionDAO = mockReductionDAO;
+		fareCalculatorService = new FareCalculatorService(mockReductionDAO);
 		ticket = new Ticket();
 		ticket.setVehicleRegNumber("ABCD");
 	}

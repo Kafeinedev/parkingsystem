@@ -52,8 +52,8 @@ public class ParkingServiceTest {
 			ticket.setParkingSpot(parkingSpot);
 			ticket.setVehicleRegNumber("ABCDEF");
 
-			parkingService = new ParkingService(mockInputReaderUtil, mockParkingSpotDAO, mockTicketDAO);
-			parkingService.reductionDAO = mockReductionDAO;
+			parkingService = new ParkingService(mockInputReaderUtil, mockParkingSpotDAO, mockTicketDAO,
+					mockReductionDAO);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Failed to set up test mock objects");
@@ -150,7 +150,7 @@ public class ParkingServiceTest {
 		}
 		verify(mockTicketDAO, times(1)).getTicket("ABCDEF");
 		verify(mockParkingSpotDAO, times(1)).updateParking(parkingSpot);
-		verify(mockReductionDAO, times(1)).isRecurring("ABCDEF");
+		verify(mockReductionDAO, times(2)).isRecurring("ABCDEF");
 		verify(mockReductionDAO, times(1)).addRecurringUser("ABCDEF");
 	}
 

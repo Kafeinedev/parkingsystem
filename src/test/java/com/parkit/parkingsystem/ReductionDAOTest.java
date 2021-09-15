@@ -127,6 +127,7 @@ class ReductionDAOTest {
 		}
 	}
 
+	@Disabled // disabled to avoid error logging
 	@Test
 	public void errorWhenAddingRecurringUserReturnFalse() {
 		try {

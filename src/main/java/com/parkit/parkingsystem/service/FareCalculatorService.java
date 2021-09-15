@@ -7,7 +7,11 @@ import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
 
-	public ReductionDAO reductionDAO;
+	private ReductionDAO reductionDAO;
+
+	public FareCalculatorService(ReductionDAO reductionDAO) {
+		this.reductionDAO = reductionDAO;
+	}
 
 	private double calculateFactor(String vehiculeRegNumber) {
 		double ret = 1.0;
