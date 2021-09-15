@@ -132,7 +132,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processExitingVehicleTest() {
+	public void processExitingVehicleCallOtherClassCorrectly() {
 		// parkingService.processExitingVehicle();
 		assertThat(false).isEqualTo(true);
 	}
