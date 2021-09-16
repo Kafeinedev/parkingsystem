@@ -39,7 +39,7 @@ public class ParkingDataBaseIT {
 	private static Clock timeMachine;
 
 	@Mock
-	private static InputReaderUtil inputReaderUtil;
+	private static InputReaderUtil mockInputReaderUtil;
 
 	@BeforeAll
 	private static void setUp() throws Exception {
@@ -54,8 +54,8 @@ public class ParkingDataBaseIT {
 
 	@BeforeEach
 	private void setUpPerTest() throws Exception {
-		when(inputReaderUtil.readSelection()).thenReturn(1);
-		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+		when(mockInputReaderUtil.readSelection()).thenReturn(1);
+		when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		dataBasePrepareService.clearDataBaseEntries();
 		timeMachine = Clock.fixed(Instant.EPOCH, TimeZone.getDefault().toZoneId());
 	}
@@ -66,7 +66,8 @@ public class ParkingDataBaseIT {
 
 	@Test
 	public void testParkingACar() {
-		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, reductionDAO);
+		ParkingService parkingService = new ParkingService(mockInputReaderUtil, parkingSpotDAO, ticketDAO,
+				reductionDAO);
 		parkingService.setClock(timeMachine);
 		parkingService.processIncomingVehicle();
 
@@ -88,7 +89,8 @@ public class ParkingDataBaseIT {
 
 	@Test
 	public void testParkingLotExit() {
-		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, reductionDAO);
+		ParkingService parkingService = new ParkingService(mockInputReaderUtil, parkingSpotDAO, ticketDAO,
+				reductionDAO);
 		parkingService.setClock(timeMachine);
 		parkingService.processIncomingVehicle();
 
@@ -110,7 +112,8 @@ public class ParkingDataBaseIT {
 
 	@Test
 	public void testParkingRecurrentUser() {
-		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, reductionDAO);
+		ParkingService parkingService = new ParkingService(mockInputReaderUtil, parkingSpotDAO, ticketDAO,
+				reductionDAO);
 		parkingService.setClock(timeMachine);
 		parkingService.processIncomingVehicle();
 		timeMachine = Clock.fixed(Instant.ofEpochSecond(3600), TimeZone.getDefault().toZoneId());
@@ -132,6 +135,47 @@ public class ParkingDataBaseIT {
 		assertThat(ticket.getParkingSpot().getNumber()).isEqualTo(1);
 		assertThat(ticket.getPrice()).isEqualTo(Fare.CAR_RATE_PER_HOUR * 1 * (1.0 - ReductionFactor.RECURRENT_USER));
 		assertThat(ticket.getVehicleRegNumber()).isEqualTo("ABCDEF");
+	}
+
+	@Test
+	public void testParkingMultipleDifferentUser() {
+		try {
+			when(mockInputReaderUtil.readSelection()).thenReturn(2, 2, 1, 2, 2, 1);
+			when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABC", "DEF", "GHI", "ABC", "DEF",
+					"GHI");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ParkingService parkingService = new ParkingService(mockInputReaderUtil, parkingSpotDAO, ticketDAO,
+				reductionDAO);
+		parkingService.setClock(timeMachine);
+
+		parkingService.processIncomingVehicle();
+		timeMachine = Clock.fixed(Instant.ofEpochSecond(1800), TimeZone.getDefault().toZoneId());
+		parkingService.setClock(timeMachine);
+		parkingService.processIncomingVehicle();
+		timeMachine = Clock.fixed(Instant.ofEpochSecond(2700), TimeZone.getDefault().toZoneId());
+		parkingService.setClock(timeMachine);
+		parkingService.processIncomingVehicle();
+
+		parkingService.processExitingVehicle();
+		parkingService.processExitingVehicle();
+		timeMachine = Clock.fixed(Instant.ofEpochSecond(3600), TimeZone.getDefault().toZoneId());
+		parkingService.setClock(timeMachine);
+		parkingService.processExitingVehicle();
+
+		Ticket firstTicket = ticketDAO.getTicket("ABC");
+		Ticket secondTicket = ticketDAO.getTicket("DEF");
+		Ticket thirdTicket = ticketDAO.getTicket("GHI");
+
+		assertThat(firstTicket.getId()).isEqualTo(1);
+		assertThat(firstTicket.getParkingSpot().getNumber()).isEqualTo(4);
+
+		assertThat(secondTicket.getId()).isEqualTo(2);
+		assertThat(secondTicket.getParkingSpot().getNumber()).isEqualTo(5);
+
+		assertThat(thirdTicket.getId()).isEqualTo(3);
+		assertThat(thirdTicket.getParkingSpot().getNumber()).isEqualTo(1);
 	}
 
 }
