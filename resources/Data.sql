@@ -44,6 +44,11 @@ create table ticket(
  OUT_TIME DATETIME,
  FOREIGN KEY (PARKING_NUMBER)
  REFERENCES parking(PARKING_NUMBER));
+ 
+ create table reduction(
+ VEHICLE_REG_NUMBER varchar(10) PRIMARY KEY NOT NULL,
+ RECURRENT_USER bool NOT NULL
+ );
 
 insert into parking(PARKING_NUMBER,AVAILABLE,TYPE) values(1,true,'CAR');
 insert into parking(PARKING_NUMBER,AVAILABLE,TYPE) values(2,true,'CAR');

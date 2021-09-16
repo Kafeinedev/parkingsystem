@@ -53,7 +53,7 @@ class ReductionDAOTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		boolean ret = reductionDAO.isRecurring("nawak");
+		boolean ret = reductionDAO.isRecurrent("nawak");
 		assertThat(ret).isEqualTo(true);
 	}
 
@@ -66,7 +66,7 @@ class ReductionDAOTest {
 			when(mockRS.next()).thenReturn(true);
 			when(mockRS.getBoolean(1)).thenReturn(true);
 
-			reductionDAO.isRecurring("nawak");
+			reductionDAO.isRecurrent("nawak");
 
 			verify(mockDBConfig, times(1)).getConnection();
 			verify(mockConnection, times(1)).prepareStatement(any(String.class));
@@ -90,7 +90,7 @@ class ReductionDAOTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		boolean ret = reductionDAO.isRecurring("blabla");
+		boolean ret = reductionDAO.isRecurrent("blabla");
 		assertThat(ret).isEqualTo(false);
 	}
 
@@ -103,7 +103,7 @@ class ReductionDAOTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		boolean ret = reductionDAO.addRecurringUser("blablacar");
+		boolean ret = reductionDAO.addRecurrentUser("blablacar");
 		assertThat(ret).isEqualTo(true);
 	}
 
@@ -113,7 +113,7 @@ class ReductionDAOTest {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
 
-			reductionDAO.addRecurringUser("joe");
+			reductionDAO.addRecurrentUser("joe");
 
 			verify(mockDBConfig, times(1)).getConnection();
 			verify(mockConnection, times(1)).prepareStatement(any(String.class));
@@ -135,7 +135,7 @@ class ReductionDAOTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		boolean ret = reductionDAO.addRecurringUser("bob");
+		boolean ret = reductionDAO.addRecurrentUser("bob");
 		assertEquals(false, ret);
 	}
 }

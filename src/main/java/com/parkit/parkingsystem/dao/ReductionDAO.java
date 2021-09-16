@@ -15,12 +15,12 @@ public class ReductionDAO {
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
-	public boolean isRecurring(String vehicleRegNumber) {
+	public boolean isRecurrent(String vehicleRegNumber) {
 		Connection con = null;
 		boolean ret = false;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.IS_RECURRING);
+			PreparedStatement ps = con.prepareStatement(DBConstants.IS_RECURRENT);
 			ps.setString(1, vehicleRegNumber);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -36,12 +36,12 @@ public class ReductionDAO {
 		return ret;
 	}
 
-	public boolean addRecurringUser(String vehicleRegNumber) {
+	public boolean addRecurrentUser(String vehicleRegNumber) {
 		Connection con = null;
 		boolean ret = false;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.ADD_RECURRING);
+			PreparedStatement ps = con.prepareStatement(DBConstants.ADD_RECURRENT);
 			ps.setString(1, vehicleRegNumber);
 			ps.setBoolean(2, true);
 			ret = ps.execute();

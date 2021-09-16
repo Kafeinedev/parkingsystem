@@ -19,8 +19,8 @@ public class FareCalculatorService {
 		if (duration <= 0.5) {
 			return 0.0;
 		}
-		if (reductionDAO.isRecurring(vehiculeRegNumber)) {
-			ret -= ReductionFactor.RECURRING_USER;
+		if (reductionDAO.isRecurrent(vehiculeRegNumber)) {
+			ret -= ReductionFactor.RECURRENT_USER;
 		}
 		return ret;
 	}

@@ -10,6 +10,7 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.Clock;
 import java.util.Date;
 
 public class ParkingService {
@@ -21,6 +22,7 @@ public class ParkingService {
 	private ParkingSpotDAO parkingSpotDAO;
 	private TicketDAO ticketDAO;
 	private ReductionDAO reductionDAO;
+	private Clock clock;
 
 	public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO,
 			ReductionDAO reductionDAO) {
@@ -28,7 +30,18 @@ public class ParkingService {
 		this.parkingSpotDAO = parkingSpotDAO;
 		this.ticketDAO = ticketDAO;
 		this.reductionDAO = reductionDAO;
-		fareCalculatorService = new FareCalculatorService(reductionDAO);
+		this.fareCalculatorService = new FareCalculatorService(reductionDAO);
+		this.clock = Clock.systemDefaultZone();
+	}
+
+	public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO,
+			ReductionDAO reductionDAO, Clock clock) {
+		this.inputReaderUtil = inputReaderUtil;
+		this.parkingSpotDAO = parkingSpotDAO;
+		this.ticketDAO = ticketDAO;
+		this.reductionDAO = reductionDAO;
+		this.clock = clock;
+		this.fareCalculatorService = new FareCalculatorService(reductionDAO);
 	}
 
 	public void processIncomingVehicle() {
@@ -50,7 +63,7 @@ public class ParkingService {
 				ticket.setInTime(inTime);
 				ticket.setOutTime(null);
 				ticketDAO.saveTicket(ticket);
-				if (reductionDAO.isRecurring(vehicleRegNumber)) {
+				if (reductionDAO.isRecurrent(vehicleRegNumber)) {
 					System.out.println(
 							"Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
 				}
@@ -113,8 +126,8 @@ public class ParkingService {
 			Date outTime = new Date();
 			ticket.setOutTime(outTime);
 			fareCalculatorService.calculateFare(ticket);
-			if (!reductionDAO.isRecurring(vehicleRegNumber)) {
-				reductionDAO.addRecurringUser(vehicleRegNumber);
+			if (!reductionDAO.isRecurrent(vehicleRegNumber)) {
+				reductionDAO.addRecurrentUser(vehicleRegNumber);
 			}
 			if (ticketDAO.updateTicket(ticket)) {
 				ParkingSpot parkingSpot = ticket.getParkingSpot();

@@ -73,7 +73,7 @@ public class ParkingServiceTest {
 			e.printStackTrace();
 		}
 		when(mockInputReaderUtil.readSelection()).thenReturn(1);
-		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
+		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		when(mockParkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 		when(mockParkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
@@ -88,7 +88,7 @@ public class ParkingServiceTest {
 		}
 		verify(mockParkingSpotDAO, times(1)).updateParking(parkingSpot);
 		verify(mockTicketDAO, times(1)).saveTicket(any(Ticket.class));
-		verify(mockReductionDAO, times(1)).isRecurring("ABCDEF");
+		verify(mockReductionDAO, times(1)).isRecurrent("ABCDEF");
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class ParkingServiceTest {
 			e.printStackTrace();
 		}
 		when(mockInputReaderUtil.readSelection()).thenReturn(1);
-		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
+		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		when(mockParkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 
 		parkingService.processIncomingVehicle();
@@ -118,7 +118,7 @@ public class ParkingServiceTest {
 			e.printStackTrace();
 		}
 		when(mockInputReaderUtil.readSelection()).thenReturn(1);
-		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(true);
+		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(true);
 		when(mockParkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 
 		parkingService.processIncomingVehicle();
@@ -139,7 +139,7 @@ public class ParkingServiceTest {
 		}
 		when(mockTicketDAO.getTicket(any(String.class))).thenReturn(ticket);
 		when(mockTicketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
+		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 
 		parkingService.processExitingVehicle();
 
@@ -150,8 +150,8 @@ public class ParkingServiceTest {
 		}
 		verify(mockTicketDAO, times(1)).getTicket("ABCDEF");
 		verify(mockParkingSpotDAO, times(1)).updateParking(parkingSpot);
-		verify(mockReductionDAO).isRecurring("ABCDEF");
-		verify(mockReductionDAO, times(1)).addRecurringUser("ABCDEF");
+		verify(mockReductionDAO).isRecurrent("ABCDEF");
+		verify(mockReductionDAO, times(1)).addRecurrentUser("ABCDEF");
 	}
 
 	@Test
@@ -163,7 +163,7 @@ public class ParkingServiceTest {
 		}
 		when(mockTicketDAO.getTicket(any(String.class))).thenReturn(ticket);
 		when(mockTicketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
+		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 
 		parkingService.processExitingVehicle();
 

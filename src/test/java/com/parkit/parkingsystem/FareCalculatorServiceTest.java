@@ -41,7 +41,7 @@ public class FareCalculatorServiceTest {
 		Date outTime = new Date();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 
-		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
+		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
@@ -57,7 +57,7 @@ public class FareCalculatorServiceTest {
 		Date outTime = new Date();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
 
-		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(false);
+		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
@@ -145,19 +145,19 @@ public class FareCalculatorServiceTest {
 		Date outTime = new Date();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
 
-		when(mockReductionDAO.isRecurring(any(String.class))).thenReturn(true);
+		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(true);
 
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
 		fareCalculatorService.calculateFare(ticket);
-		assertEquals((Fare.BIKE_RATE_PER_HOUR * 1.0 - ReductionFactor.RECURRING_USER), ticket.getPrice());
+		assertEquals((Fare.BIKE_RATE_PER_HOUR * 1.0 - ReductionFactor.RECURRENT_USER), ticket.getPrice());
 	}
 
 	@Test
 	public void calculateFareCarLessThanThirtyMin() {
 		Date inTime = new Date();
-		inTime.setTime(System.currentTimeMillis() - (1799999));
+		inTime.setTime(System.currentTimeMillis() - (1799000));
 
 		Date outTime = new Date();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
