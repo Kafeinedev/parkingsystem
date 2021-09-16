@@ -126,9 +126,9 @@ public class ParkingDataBaseIT {
 		parkingService.processExitingVehicle();
 
 		Ticket ticket = ticketDAO.getTicket("ABCDEF");
-		assertThat(ticket.getId()).isEqualTo(1);
+		assertThat(ticket.getId()).isEqualTo(2);
 		assertThat(ticket.getInTime()).isEqualTo(Date.from(Instant.ofEpochSecond(7200)));
-		assertThat(ticket.getOutTime()).isEqualTo(Date.from(Instant.ofEpochSecond(14600)));
+		assertThat(ticket.getOutTime()).isEqualTo(Date.from(Instant.ofEpochSecond(10800)));
 		assertThat(ticket.getParkingSpot().getNumber()).isEqualTo(1);
 		assertThat(ticket.getPrice()).isEqualTo(Fare.CAR_RATE_PER_HOUR * 1 * (1.0 - ReductionFactor.RECURRENT_USER));
 		assertThat(ticket.getVehicleRegNumber()).isEqualTo("ABCDEF");
