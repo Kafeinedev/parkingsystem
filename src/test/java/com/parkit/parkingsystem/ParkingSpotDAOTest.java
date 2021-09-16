@@ -109,6 +109,7 @@ class ParkingSpotDAOTest {
 		assertEquals(true, ret);
 	}
 
+	@Disabled
 	@Test
 	public void updateParkingReturnFalseIfNotProperlyUpdated() {
 		try {

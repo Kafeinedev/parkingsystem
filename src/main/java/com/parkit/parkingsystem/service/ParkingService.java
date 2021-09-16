@@ -34,14 +34,8 @@ public class ParkingService {
 		this.clock = Clock.systemDefaultZone();
 	}
 
-	public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO,
-			ReductionDAO reductionDAO, Clock clock) {
-		this.inputReaderUtil = inputReaderUtil;
-		this.parkingSpotDAO = parkingSpotDAO;
-		this.ticketDAO = ticketDAO;
-		this.reductionDAO = reductionDAO;
+	public void setClock(Clock clock) {
 		this.clock = clock;
-		this.fareCalculatorService = new FareCalculatorService(reductionDAO);
 	}
 
 	public void processIncomingVehicle() {
