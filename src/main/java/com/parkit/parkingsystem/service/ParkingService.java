@@ -53,7 +53,7 @@ public class ParkingService {
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
 															// false
 
-				Date inTime = new Date();
+				Date inTime = Date.from(clock.instant());
 				Ticket ticket = new Ticket();
 				// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
 				// ticket.setId(ticketID);
@@ -123,7 +123,7 @@ public class ParkingService {
 		try {
 			String vehicleRegNumber = getVehicleRegNumber();
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-			Date outTime = new Date();
+			Date outTime = Date.from(clock.instant());
 			ticket.setOutTime(outTime);
 			fareCalculatorService.calculateFare(ticket);
 			if (!reductionDAO.isRecurrent(vehicleRegNumber)) {

@@ -70,7 +70,7 @@ public class ParkingDataBaseIT {
 
 		Ticket ticket = ticketDAO.getTicket("ABCDEF");
 		assertThat(ticket.getId()).isEqualTo(1);
-		assertThat(ticket.getOutTime().getTime()).isEqualTo(Date.from(Instant.EPOCH));
+		assertThat(ticket.getInTime()).isEqualTo(Date.from(Instant.EPOCH));
 		assertEquals(true, (ticket.getOutTime() == null));
 		assertThat(ticket.getParkingSpot().getNumber()).isEqualTo(1);
 		assertThat(ticket.getPrice()).isEqualTo(0.0);
@@ -89,13 +89,17 @@ public class ParkingDataBaseIT {
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, reductionDAO,
 				timeMachine);
 		parkingService.processIncomingVehicle();
+
 		timeMachine = Clock.fixed(Instant.ofEpochSecond(3600), TimeZone.getDefault().toZoneId());
+
+		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, reductionDAO, timeMachine);
+
 		parkingService.processExitingVehicle();
 
 		Ticket ticket = ticketDAO.getTicket("ABCDEF");
 		assertThat(ticket.getId()).isEqualTo(1);
-		assertThat(ticket.getOutTime().getTime()).isEqualTo(Date.from(Instant.EPOCH));
-		assertThat(ticket.getOutTime().getTime()).isEqualTo(Date.from(Instant.ofEpochSecond(3600)));
+		assertThat(ticket.getInTime()).isEqualTo(Date.from(Instant.EPOCH));
+		assertThat(ticket.getOutTime()).isEqualTo(Date.from(Instant.ofEpochSecond(3600)));
 		assertThat(ticket.getParkingSpot().getNumber()).isEqualTo(1);
 		assertThat(ticket.getPrice()).isEqualTo(1.5);
 		assertThat(ticket.getVehicleRegNumber()).isEqualTo("ABCDEF");

@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class TicketDAO {
 
@@ -58,8 +59,9 @@ public class TicketDAO {
 				ticket.setId(rs.getInt(2));
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(rs.getDouble(3));
-				ticket.setInTime(rs.getTimestamp(4));
-				ticket.setOutTime(rs.getTimestamp(5));
+				ticket.setInTime(new Date(rs.getTimestamp(4).getTime()));
+				Timestamp outTime = rs.getTimestamp(5);
+				ticket.setOutTime(outTime != null ? new Date(outTime.getTime()) : null);
 			}
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
