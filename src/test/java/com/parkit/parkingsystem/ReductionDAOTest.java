@@ -12,7 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -82,7 +81,7 @@ class ReductionDAOTest {
 		}
 	}
 
-	@Disabled // disabled because of error logging
+	// @Disabled // disabled because of error logging
 	@Test
 	public void isRecurringUserReturnFalseIfError() {
 		try {
@@ -127,7 +126,7 @@ class ReductionDAOTest {
 		}
 	}
 
-	@Disabled // disabled to avoid error logging
+	// @Disabled // disabled to avoid error logging
 	@Test
 	public void errorWhenAddingRecurringUserReturnFalse() {
 		try {

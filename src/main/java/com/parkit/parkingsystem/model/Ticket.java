@@ -10,6 +10,19 @@ public class Ticket {
 	private Date inTime;
 	private Date outTime;
 
+	public Ticket(int id, ParkingSpot parkingSpot, String vehicleRegNumber, double price, Date inTime, Date outTime) {
+		this.id = id;
+		this.parkingSpot = parkingSpot;
+		this.vehicleRegNumber = vehicleRegNumber;
+		this.price = price;
+		this.inTime = inTime;
+		this.outTime = outTime;
+	}
+
+	public Ticket() {
+
+	}
+
 	public int getId() {
 		return id;
 	}

@@ -82,7 +82,7 @@ public class TicketDAOTest {
 		}
 	}
 
-	@Disabled // Disabled because of error logging
+	// @Disabled // Disabled because of error logging
 	@Test
 	public void errorWhenSavingTicketReturnFalse() {
 		try {
@@ -106,7 +106,9 @@ public class TicketDAOTest {
 			when(mockRS.getInt(any(Integer.class))).thenReturn(42, 28);
 			when(mockRS.getString(6)).thenReturn("BIKE");
 			when(mockRS.getDouble(3)).thenReturn(27.0);
-			when(mockRS.getTimestamp(any(Integer.class))).thenReturn(date, futureDate);
+			// Because the getTimestamp call was moved in the code we need to return in
+			// inverse order.
+			when(mockRS.getTimestamp(any(Integer.class))).thenReturn(futureDate, date);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -115,8 +117,8 @@ public class TicketDAOTest {
 		assertThat(ticket.getId()).isEqualTo(28);
 		assertThat(ticket.getVehicleRegNumber()).isEqualTo("SalutCamarade");
 		assertThat(ticket.getPrice()).isEqualTo(27.0);
-		assertThat(ticket.getInTime()).isEqualTo(date);
-		assertThat(ticket.getOutTime()).isEqualTo(futureDate);
+		assertThat(ticket.getInTime()).isEqualTo(new Date(date.getTime()));
+		assertThat(ticket.getOutTime()).isEqualTo(new Date(futureDate.getTime()));
 	}
 
 	@Test
@@ -175,7 +177,7 @@ public class TicketDAOTest {
 		assertThat(ret).isEqualTo(true);
 	}
 
-	@Disabled // disabled because of error logging
+	// @Disabled // disabled because of error logging
 	@Test
 	public void updateTicketIncorrectlyReturnfalse() {
 		try {

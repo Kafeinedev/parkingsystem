@@ -17,40 +17,46 @@ public class ReductionDAO {
 
 	public boolean isRecurrent(String vehicleRegNumber) {
 		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		boolean ret = false;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.IS_RECURRENT);
+			ps = con.prepareStatement(DBConstants.IS_RECURRENT);
 			ps.setString(1, vehicleRegNumber);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			if (rs.next()) {
 				ret = rs.getBoolean(1);
 			}
-			dataBaseConfig.closeResultSet(rs);
-			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
-			logger.error("Error getting recurring user", ex);
+			logger.error("Error getting recurrent user", ex);
 		} finally {
-			dataBaseConfig.closeConnection(con);
+			close(con, ps, rs);
 		}
 		return ret;
 	}
 
 	public boolean addRecurrentUser(String vehicleRegNumber) {
 		Connection con = null;
+		PreparedStatement ps = null;
 		boolean ret = false;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.ADD_RECURRENT);
+			ps = con.prepareStatement(DBConstants.ADD_RECURRENT);
 			ps.setString(1, vehicleRegNumber);
 			ps.setBoolean(2, true);
 			ret = ps.execute();
-			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
-			logger.error("Error adding recurring user", ex);
+			logger.error("Error adding recurrent user", ex);
 		} finally {
-			dataBaseConfig.closeConnection(con);
+			close(con, ps, null);
 		}
 		return ret;
+	}
+
+	private void close(Connection con, PreparedStatement ps, ResultSet rs) {
+		dataBaseConfig.closeResultSet(rs);
+		dataBaseConfig.closePreparedStatement(ps);
+		dataBaseConfig.closeConnection(con);
 	}
 }

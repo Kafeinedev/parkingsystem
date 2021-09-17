@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -59,7 +58,7 @@ class ParkingSpotDAOTest {
 		assertEquals(1, ret);
 	}
 
-	@Disabled
+	// @Disabled
 	@Test
 	public void getNextAvailableSpotReturnMinusOneIfError() {
 		try {
@@ -109,7 +108,7 @@ class ParkingSpotDAOTest {
 		assertEquals(true, ret);
 	}
 
-	@Disabled
+	// @Disabled
 	@Test
 	public void updateParkingReturnFalseIfNotProperlyUpdated() {
 		try {
