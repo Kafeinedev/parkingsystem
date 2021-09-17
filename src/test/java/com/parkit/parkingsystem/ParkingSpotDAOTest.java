@@ -44,7 +44,7 @@ class ParkingSpotDAOTest {
 	}
 
 	@Test
-	public void getNextAvailableSpotReturnPositiveInteger() {
+	public void getNextAvailableSpot_whenReceivingDataFromDB_returnProperSpotNumber() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -60,7 +60,7 @@ class ParkingSpotDAOTest {
 
 	// @Disabled
 	@Test
-	public void getNextAvailableSpotReturnMinusOneIfError() {
+	public void getNextAvailableSpot_whenEncounteringAnError_returnMinusOne() {
 		try {
 			when(mockDBConfig.getConnection()).thenThrow(new MockitoException("Unit test exception"));
 		} catch (Exception e) {
@@ -71,7 +71,7 @@ class ParkingSpotDAOTest {
 	}
 
 	@Test
-	public void getNextAvailableSpotCallOtherClassProperly() {
+	public void getNextAvailableSpot_whenFetchingDataFromDB_communicateWithDBProperly() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -96,7 +96,7 @@ class ParkingSpotDAOTest {
 	}
 
 	@Test
-	public void updateParkingReturnTrueIfProperlyUpdated() {
+	public void updateParking_whenProperlyUpdatingDB_returnTrue() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -110,7 +110,7 @@ class ParkingSpotDAOTest {
 
 	// @Disabled
 	@Test
-	public void updateParkingReturnFalseIfNotProperlyUpdated() {
+	public void updateParking_whenEncounteringAnError_returnFalse() {
 		try {
 			when(mockDBConfig.getConnection()).thenThrow(new MockitoException("Unit test exception"));
 		} catch (Exception e) {
@@ -121,7 +121,7 @@ class ParkingSpotDAOTest {
 	}
 
 	@Test
-	public void updateParkingCallOtherClassProperly() {
+	public void updateParking_whenFetchingDataFromDB_communicateWithDBProperly() {
 		parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);

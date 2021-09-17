@@ -71,7 +71,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processIncomingVehicleCallOtherClassCorrectly() {
+	public void processIncomingVehicle_whenCommunicatingWithDB_sendTheProperData() {
 		when(mockInputReaderUtil.readSelection()).thenReturn(1);
 		when(mockParkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 		when(mockParkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
@@ -91,7 +91,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processIncomingVehicleUseSystemOutCorrectly() {
+	public void processIncomingVehicle_whenCommunicatingwithUser_sendTheProperInfo() {
 		when(mockInputReaderUtil.readSelection()).thenReturn(1);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		when(mockParkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -105,7 +105,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processIncomingVehicleUseSystemOutCorrectlyRecurringUser() {
+	public void processIncomingVehicle_whenCommunicatingwithReccurentUser_sendTheProperInfo() {
 		when(mockInputReaderUtil.readSelection()).thenReturn(1);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(true);
 		when(mockParkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -120,7 +120,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processExitingVehicleCallOtherClassCorrectly() {
+	public void processExitingVehicle_whenCommunicatingWithDB_sendTheProperData() {
 		when(mockTicketDAO.getTicket(any(String.class))).thenReturn(ticket);
 		when(mockTicketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
@@ -139,7 +139,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processExitingVehicleUseSystemOutCorrectly() {
+	public void processExitingVehicle_whenCommunicatingwithUser_sendTheProperInfo() {
 		when(mockTicketDAO.getTicket(any(String.class))).thenReturn(ticket);
 		when(mockTicketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);

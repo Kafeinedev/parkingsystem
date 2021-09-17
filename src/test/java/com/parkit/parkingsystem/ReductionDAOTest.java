@@ -42,7 +42,7 @@ class ReductionDAOTest {
 	}
 
 	@Test
-	public void isRecurringUserReturnProperValue() {
+	public void isRecurrent_whenReceivingDataFromDB_returnProperValue() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -57,7 +57,7 @@ class ReductionDAOTest {
 	}
 
 	@Test
-	public void isRecurringUserCallOtherClassesProperly() {
+	public void isRecurrent_whenFetchingDataFromDB_communicateWithDBProperly() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -81,9 +81,8 @@ class ReductionDAOTest {
 		}
 	}
 
-	// @Disabled // disabled because of error logging
 	@Test
-	public void isRecurringUserReturnFalseIfError() {
+	public void isRecurrent_whenProblemCommunicatingWithDB_returnFalse() {
 		try {
 			when(mockDBConfig.getConnection()).thenThrow(new MockitoException("Unit test exception"));
 		} catch (Exception e) {
@@ -94,7 +93,7 @@ class ReductionDAOTest {
 	}
 
 	@Test
-	public void addingRecurringUserCorrectlyReturnTrue() {
+	public void addRecurrentUser_whenUpdatingDBCorrectly_returnTrue() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -107,7 +106,7 @@ class ReductionDAOTest {
 	}
 
 	@Test
-	public void addingRecurringUserCallOtherClassesProperly() {
+	public void addRecurrentUser_whenFetchingDataFromDB_communicateWithDBProperly() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -126,9 +125,8 @@ class ReductionDAOTest {
 		}
 	}
 
-	// @Disabled // disabled to avoid error logging
 	@Test
-	public void errorWhenAddingRecurringUserReturnFalse() {
+	public void addRecurrentUser_whenProblemCommunicatingWithDB_ReturnFalse() {
 		try {
 			when(mockDBConfig.getConnection()).thenThrow(new MockitoException("Unit test exception"));
 		} catch (Exception e) {

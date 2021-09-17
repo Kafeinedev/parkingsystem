@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.Instant;
 import java.util.Date;
 
 import com.parkit.parkingsystem.config.DataBaseConfig;
@@ -38,17 +39,12 @@ public class TicketDAOTest {
 	private void setUpPerTest() {
 		ticketDAO = new TicketDAO();
 		ticketDAO.dataBaseConfig = mockDBConfig;
-		ticket = new Ticket();
-		ticket.setId(1);
-		ticket.setParkingSpot(new ParkingSpot(35, ParkingType.CAR, false));
-		ticket.setVehicleRegNumber("ABCDEF");
-		ticket.setPrice(0.0);
-		ticket.setInTime(new Date());
-		ticket.setOutTime(new Date());
+		ticket = new Ticket(1, new ParkingSpot(35, ParkingType.CAR, false), "ABCDEF", 0.0, Date.from(Instant.EPOCH),
+				Date.from(Instant.ofEpochSecond(3600)));
 	}
 
 	@Test
-	public void savingTicketCorrectlyReturnTrue() {
+	public void savingTicket_whenSavingTicketCorrectly_returnTrue() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -61,7 +57,7 @@ public class TicketDAOTest {
 	}
 
 	@Test
-	public void savingTicketCallOtherClassCorrectly() {
+	public void savingTicket_givenAProperTicket_sendTheRightDataToDB() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -82,9 +78,8 @@ public class TicketDAOTest {
 		}
 	}
 
-	// @Disabled // Disabled because of error logging
 	@Test
-	public void errorWhenSavingTicketReturnFalse() {
+	public void savingTicket_whenEncounteringAnError_returnFalse() {
 		try {
 			when(mockDBConfig.getConnection()).thenThrow(new MockitoException("Unit test exception"));
 		} catch (Exception e) {
@@ -95,9 +90,10 @@ public class TicketDAOTest {
 	}
 
 	@Test
-	public void getTicketReturnProperTicket() {
-		java.sql.Timestamp date = new java.sql.Timestamp(new Date().getTime());
-		java.sql.Timestamp futureDate = new java.sql.Timestamp(date.getTime() + 10);
+	public void getTicket_whenReceivingDataFromDB_returnProperTicket() {
+		// This test might break if call to RS are moved in the code
+		java.sql.Timestamp date = new java.sql.Timestamp(Date.from(Instant.EPOCH).getTime());
+		java.sql.Timestamp futureDate = new java.sql.Timestamp(Date.from(Instant.ofEpochSecond(3600)).getTime());
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -122,7 +118,7 @@ public class TicketDAOTest {
 	}
 
 	@Test
-	public void getTicketCallOtherClassCorrectly() {
+	public void getTicket_whenFetchingDataFromDB_communicateWithDBProperly() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -152,7 +148,7 @@ public class TicketDAOTest {
 	}
 
 	@Test
-	public void getTicketReturnNullIfThereIsNoResult() {
+	public void getTicket_whenProblemCommunicatingWithDB_returnNullTicket() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -166,7 +162,7 @@ public class TicketDAOTest {
 	}
 
 	@Test
-	public void updateTicketCorrectlyReturnTrue() {
+	public void updateTicket_whenProperlyUpdatingDB_returnTrue() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);
@@ -177,9 +173,8 @@ public class TicketDAOTest {
 		assertThat(ret).isEqualTo(true);
 	}
 
-	// @Disabled // disabled because of error logging
 	@Test
-	public void updateTicketIncorrectlyReturnfalse() {
+	public void updateTicket_whenProblemCommunicatingWithDB_returnfalse() {
 		try {
 			when(mockDBConfig.getConnection()).thenThrow(new MockitoException("Unit test exception"));
 		} catch (Exception e) {
@@ -190,7 +185,7 @@ public class TicketDAOTest {
 	}
 
 	@Test
-	public void updateTicketCallOtherClassCorrectly() {
+	public void updateTicket_whenSendingNewData_communicateWithDBProperly() {
 		try {
 			when(mockDBConfig.getConnection()).thenReturn(mockConnection);
 			when(mockConnection.prepareStatement(any(String.class))).thenReturn(mockPS);

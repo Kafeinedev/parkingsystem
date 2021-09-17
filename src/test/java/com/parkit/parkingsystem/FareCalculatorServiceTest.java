@@ -37,7 +37,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareCar() {
+	public void calculateFare_whenACarStayOneHour_setTheProperTicketPrice() {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		ticket.setOutTime(Date.from(Instant.ofEpochSecond(3600)));
@@ -48,7 +48,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareBike() {
+	public void calculateFare_whenABikeStayOneHour_setTheProperTicketPrice() {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		ticket.setOutTime(Date.from(Instant.ofEpochSecond(3600)));
@@ -59,7 +59,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareUnkownType() {
+	public void calculateFare_whenAnUnknownTypeIsGiven_throw() {
 		ParkingSpot parkingSpot = new ParkingSpot(1, null, false);
 		ticket.setOutTime(Date.from(Instant.ofEpochSecond(3600)));
 		ticket.setParkingSpot(parkingSpot);
@@ -68,7 +68,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareBikeWithFutureInTime() {
+	public void calculateFare_whenImpossibleTimeIsGiven_throw() {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
 		ticket.setOutTime(ticket.getInTime());
 		ticket.setInTime(Date.from(Instant.ofEpochSecond(3600)));
@@ -78,7 +78,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareBikeWithLessThanOneHourParkingTime() {
+	public void calculateFare_whenABikeStay45mins_setTheProperTicketPrice() {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		ticket.setOutTime(Date.from(Instant.ofEpochSecond(2700)));
@@ -89,7 +89,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareCarWithLessThanOneHourParkingTime() {
+	public void calculateFare_whenACarStay45mins_setTheProperTicketPrice() {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		ticket.setOutTime(Date.from(Instant.ofEpochSecond(2700)));
@@ -100,7 +100,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareCarWithMoreThanADayParkingTime() {
+	public void calculateFare_whenACarStayOneDay_setTheProperTicketPrice() {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		ticket.setOutTime(Date.from(Instant.ofEpochSecond(3600 * 24)));
@@ -111,7 +111,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareBikeOneHourRecurringUser() {
+	public void calculateFare_whenAReccurrentBikeStayOneHour_setTheProperTicketPrice() {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(true);
 		ticket.setOutTime(Date.from(Instant.ofEpochSecond(3600)));
@@ -122,7 +122,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareCarLessThanThirtyMin() {
+	public void calculateFare_whenACarStayLessThan30mins_setTheProperTicketPrice() {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 
