@@ -38,24 +38,22 @@ public class ParkingService {
 		this.clock = clock;
 	}
 
+	public void setCalculatorService(FareCalculatorService fcs) {
+		this.fareCalculatorService = fcs;
+	}
+
 	public void processIncomingVehicle() {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
 			if (parkingSpot != null && parkingSpot.getNumber() > 0) {
 				String vehicleRegNumber = getVehicleRegNumber();
 				parkingSpot.setAvailable(false);
-				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
-															// false
+				parkingSpotDAO.updateParking(parkingSpot);
 
 				Date inTime = Date.from(clock.instant());
-				Ticket ticket = new Ticket();
-				// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-				// ticket.setId(ticketID);
-				ticket.setParkingSpot(parkingSpot);
-				ticket.setVehicleRegNumber(vehicleRegNumber);
-				ticket.setPrice(0);
-				ticket.setInTime(inTime);
-				ticket.setOutTime(null);
+				// we do not care about the value of ID since it is not send to DB
+				Ticket ticket = new Ticket(0, parkingSpot, vehicleRegNumber, 0.0, inTime, null);
+
 				ticketDAO.saveTicket(ticket);
 				if (reductionDAO.isRecurrent(vehicleRegNumber)) {
 					System.out.println(
@@ -120,9 +118,7 @@ public class ParkingService {
 			Date outTime = Date.from(clock.instant());
 			ticket.setOutTime(outTime);
 			fareCalculatorService.calculateFare(ticket);
-			if (!reductionDAO.isRecurrent(vehicleRegNumber)) {
-				reductionDAO.addRecurrentUser(vehicleRegNumber);
-			}
+
 			if (ticketDAO.updateTicket(ticket)) {
 				ParkingSpot parkingSpot = ticket.getParkingSpot();
 				parkingSpot.setAvailable(true);
@@ -130,6 +126,10 @@ public class ParkingService {
 				System.out.println("Please pay the parking fare:" + ticket.getPrice());
 				System.out.println(
 						"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+
+				if (!reductionDAO.isRecurrent(vehicleRegNumber)) {
+					reductionDAO.addRecurrentUser(vehicleRegNumber);
+				}
 			} else {
 				System.out.println("Unable to update ticket information. Error occurred");
 			}

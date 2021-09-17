@@ -6,6 +6,7 @@ import com.parkit.parkingsystem.dao.ReductionDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.service.FareCalculatorService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.*;
 public class ParkingServiceTest {
 
 	private static ParkingService parkingService;
+	// necessary to redirect System.out
 	private final PrintStream standardOut = System.out;
 	private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 
@@ -41,22 +43,25 @@ public class ParkingServiceTest {
 	private static TicketDAO mockTicketDAO;
 	@Mock
 	private static ReductionDAO mockReductionDAO;
+	@Mock
+	private static FareCalculatorService mockFareCalculatorService;
 
 	@BeforeEach
 	private void setUpPerTest() {
 		System.setOut(new PrintStream(outputStreamCaptor));
+
 		try {
 			parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-			ticket = new Ticket();
-			ticket.setInTime(new Date());
-			ticket.setParkingSpot(parkingSpot);
-			ticket.setVehicleRegNumber("ABCDEF");
+			ticket = new Ticket(0, parkingSpot, "ABCDEF", 0.0, new Date(), null);
 
 			parkingService = new ParkingService(mockInputReaderUtil, mockParkingSpotDAO, mockTicketDAO,
 					mockReductionDAO);
+			parkingService.setCalculatorService(mockFareCalculatorService);
+
+			when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RuntimeException("Failed to set up test mock objects");
+			throw new RuntimeException("Failed to set up test");
 		}
 	}
 
@@ -67,13 +72,7 @@ public class ParkingServiceTest {
 
 	@Test
 	public void processIncomingVehicleCallOtherClassCorrectly() {
-		try {
-			when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		when(mockInputReaderUtil.readSelection()).thenReturn(1);
-		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		when(mockParkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 		when(mockParkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
@@ -93,11 +92,6 @@ public class ParkingServiceTest {
 
 	@Test
 	public void processIncomingVehicleUseSystemOutCorrectly() {
-		try {
-			when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		when(mockInputReaderUtil.readSelection()).thenReturn(1);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
 		when(mockParkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -112,11 +106,6 @@ public class ParkingServiceTest {
 
 	@Test
 	public void processIncomingVehicleUseSystemOutCorrectlyRecurringUser() {
-		try {
-			when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		when(mockInputReaderUtil.readSelection()).thenReturn(1);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(true);
 		when(mockParkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -132,11 +121,6 @@ public class ParkingServiceTest {
 
 	@Test
 	public void processExitingVehicleCallOtherClassCorrectly() {
-		try {
-			when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		when(mockTicketDAO.getTicket(any(String.class))).thenReturn(ticket);
 		when(mockTicketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
@@ -156,11 +140,6 @@ public class ParkingServiceTest {
 
 	@Test
 	public void processExitingVehicleUseSystemOutCorrectly() {
-		try {
-			when(mockInputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		when(mockTicketDAO.getTicket(any(String.class))).thenReturn(ticket);
 		when(mockTicketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 		when(mockReductionDAO.isRecurrent(any(String.class))).thenReturn(false);
@@ -170,6 +149,6 @@ public class ParkingServiceTest {
 		assertThat(outputStreamCaptor.toString())
 				.isEqualTo("Please type the vehicle registration number and press enter key\n"
 						+ "Please pay the parking fare:" + ticket.getPrice() + '\n'
-						+ "Recorded out-time for vehicle number:ABCDEF is:" + new Date() + '\n');
+						+ "Recorded out-time for vehicle number:ABCDEF is:" + ticket.getOutTime() + '\n');
 	}
 }
