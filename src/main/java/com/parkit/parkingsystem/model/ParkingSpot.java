@@ -40,4 +40,9 @@ public class ParkingSpot {
 		ParkingSpot that = (ParkingSpot) o;
 		return number == that.number;
 	}
+
+	@Override
+	public int hashCode() {
+		return number;
+	}
 }

@@ -134,7 +134,7 @@ public class ParkingServiceTest {
 		}
 		verify(mockTicketDAO, times(1)).getTicket("ABCDEF");
 		verify(mockParkingSpotDAO, times(1)).updateParking(parkingSpot);
-		verify(mockReductionDAO).isRecurrent("ABCDEF");
+		verify(mockReductionDAO, times(1)).isRecurrent("ABCDEF");
 		verify(mockReductionDAO, times(1)).addRecurrentUser("ABCDEF");
 	}
 

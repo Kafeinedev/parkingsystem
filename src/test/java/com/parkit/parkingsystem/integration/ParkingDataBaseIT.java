@@ -82,9 +82,6 @@ public class ParkingDataBaseIT {
 		int nextSpot = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 
 		assertThat(nextSpot).isEqualTo(2);
-		// TODO: check that a ticket is actually saved in DB and Parking table is
-		// updated
-		// with availability
 	}
 
 	@Test
@@ -105,9 +102,6 @@ public class ParkingDataBaseIT {
 		assertThat(ticket.getParkingSpot().getNumber()).isEqualTo(1);
 		assertThat(ticket.getPrice()).isEqualTo(Fare.CAR_RATE_PER_HOUR * 1);
 		assertThat(ticket.getVehicleRegNumber()).isEqualTo("ABCDEF");
-
-		// TODO:check that the fare generated and out time are populated correctly in
-		// the database
 	}
 
 	@Test
